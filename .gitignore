@@ -1,0 +1,39 @@
+# Build
+[Bb]in/
+[Oo]bj/
+[Dd]ebug*/
+[Rr]elease*/
+
+# Logs
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.sln.docstates
+
+# Rider / ReSharper
+.idea/
+_ReSharper*/
+*.DotSettings.user
+
+# .NET
+artifacts/
+*.nupkg
+*.snupkg
+.dotnet/
+
+# Tests & Coverage
+[Tt]est[Rr]esult*/
+coverage/
+coverage.*
+
+# Configs (local only)
+appsettings.Development.json
+appsettings.Local.json
+
+# OS
+.DS_Store
+Thumbs.db
