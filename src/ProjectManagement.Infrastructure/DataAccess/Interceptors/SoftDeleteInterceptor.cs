@@ -1,5 +1,7 @@
-﻿namespace ProjectManagement.Infrastructure.DataAccess.Interceptors;
+﻿using Microsoft.EntityFrameworkCore.Diagnostics;
 
-public class SoftDeleteInterceptor
+namespace ProjectManagement.Infrastructure.DataAccess.Interceptors;
+
+public class SoftDeleteInterceptor : IInterceptor
 {
 }
