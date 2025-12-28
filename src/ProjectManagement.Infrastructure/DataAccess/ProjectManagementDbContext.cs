@@ -3,6 +3,7 @@ using ProjectManagement.Domain.Aggregates.ProjectAggregate;
 using ProjectManagement.Domain.Common;
 using System.Linq.Expressions;
 using System.Reflection;
+using ProjectManagement.Infrastructure.Persistence.Interceptors;
 
 namespace ProjectManagement.Infrastructure.DataAccess;
 
@@ -62,5 +63,16 @@ public class ProjectManagementDbContext : DbContext
 
         return false;
     }
+    #endregion
+    
+    #region Interceptor
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.AddInterceptors(
+            new AuditInterceptor(),
+            new SoftDeleteInterceptor()
+        );
+    }
+
     #endregion
 }
