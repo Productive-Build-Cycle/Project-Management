@@ -28,7 +28,7 @@ public class AuditInterceptor : SaveChangesInterceptor
                 entry.Entity.SetCreatedAt(now);
             }
 
-            if (entry.State == EntityState.Modified)
+            else if (entry.State == EntityState.Modified)
             {
                 // Update ModifiedAt timestamp when an existing entity is modified
                 entry.Entity.SetModifiedAt(now);

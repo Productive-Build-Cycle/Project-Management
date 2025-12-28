@@ -26,7 +26,7 @@ public class SoftDeleteInterceptor : SaveChangesInterceptor
             {
                 // Instead of physically deleting, mark the entity as removed and update ModifiedAt
                 entry.State = EntityState.Modified;
-                entry.Entity.SoftRemove(now);
+                entry.Entity.SoftDelete(now);
             }
         }
 

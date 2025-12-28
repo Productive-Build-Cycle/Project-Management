@@ -9,7 +9,7 @@ public abstract class RemovableEntity<T> : BaseEntity<T>
     public DateTime? RemovedAt { get; private set; }
 
     // Marks the entity as deleted without removing it from the database
-    public void SoftRemove(DateTime time)
+    public void SoftDelete(DateTime time)
     {
         IsDeleted = true;
         RemovedAt = time;
