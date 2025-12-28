@@ -2,6 +2,7 @@
 
 public enum ProjectStatus
 {
-    Completed,
-    Draft
+    Draft,
+    InProgress,
+    Completed
 }
