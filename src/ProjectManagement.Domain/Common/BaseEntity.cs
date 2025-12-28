@@ -9,8 +9,6 @@ public abstract class BaseEntity<T>
     public T Id { get; protected set; }
 
     // Timestamps for tracking entity changes
-    public DateTime CreatedOn { get; set; }
-    public DateTime ModifiedOn { get; set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime? ModifiedAt { get; private set; }
 
