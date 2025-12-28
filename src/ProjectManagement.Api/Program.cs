@@ -1,4 +1,5 @@
 using ProjectManagement.Api.Extentions;
+using ProjectManagement.Api.Middlewares;
 using ProjectManagement.Infrastructure.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,8 @@ builder.Services.AddDependencyInjections(builder.Configuration);
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
