@@ -17,9 +17,9 @@ public static class SwaggerExtensions
 
             options.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "PhoneBook API",
+                Title = "Project Management API",
                 Version = "v1",
-                Description = "Phone Book Test Project"
+                Description = "Project Management Project"
             });
         });
 
@@ -32,7 +32,7 @@ public static class SwaggerExtensions
         app.UseSwagger();
         app.UseSwaggerUI(options =>
         {
-            options.SwaggerEndpoint("/swagger/v1/swagger.json", "PhoneBook API v1");
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "Project Management  API v1");
         });
 
         return app;

@@ -6,6 +6,10 @@ namespace ProjectManagement.Api.Controllers
     [Route("[controller]")]
     public class ProjectController : ControllerBase
     {
+        /// <summary>
+        /// just a simple get
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Get()
         {
