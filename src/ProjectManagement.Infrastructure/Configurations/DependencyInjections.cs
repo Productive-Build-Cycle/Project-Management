@@ -1,7 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ProjectManagement.Application.Interfaces.Persistence;
+using ProjectManagement.Domain.Repositories;
 using ProjectManagement.Infrastructure.DataAccess;
+using ProjectManagement.Infrastructure.Persistence;
 
 namespace ProjectManagement.Infrastructure.Configurations;
 
@@ -24,6 +27,11 @@ public static class DependencyInjections
                 });
         });
 
+        #endregion
+        
+        #region Repositories & UnitOfWork
+        services.AddScoped<IProjectRepository, ProjectRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         #endregion
 
         #region InternalServices
