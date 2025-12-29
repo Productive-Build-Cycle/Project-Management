@@ -6,6 +6,9 @@ namespace ProjectManagement.Api.Middlewares;
 
 public sealed class ExceptionHandlerMiddleware
 {
+    private static readonly JsonSerializerOptions JsonOptions =
+        new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+
     private readonly RequestDelegate _next;
 
     public ExceptionHandlerMiddleware(RequestDelegate next)
@@ -13,30 +16,42 @@ public sealed class ExceptionHandlerMiddleware
         _next = next;
     }
 
-    public async Task Invoke(HttpContext context)
+    public async Task InvokeAsync(HttpContext context)
     {
         try
         {
             await _next(context);
         }
-        catch (ProjectNotFoundException ex)
+        catch (Exception exception)
         {
-            await WriteError(context, HttpStatusCode.NotFound, ex.Message);
-        }
-        catch (ArgumentException ex)
-        {
-            await WriteError(context, HttpStatusCode.BadRequest, ex.Message);
-        }
-        catch (Exception)
-        {
-            await WriteError(
-                context,
-                HttpStatusCode.InternalServerError,
-                "An unexpected error occurred.");
+            await HandleExceptionAsync(context, exception);
         }
     }
 
-    private static async Task WriteError(
+    private static async Task HandleExceptionAsync(
+        HttpContext context,
+        Exception exception)
+    {
+        var (statusCode, message) = exception switch
+        {
+            ProjectNotFoundException ex =>
+                (HttpStatusCode.NotFound, ex.Message),
+
+            ArgumentException ex =>
+                (HttpStatusCode.BadRequest, ex.Message),
+
+            InvalidOperationException ex =>
+                (HttpStatusCode.BadRequest, ex.Message),
+
+            _ =>
+                (HttpStatusCode.InternalServerError,
+                 "An unexpected error occurred.")
+        };
+
+        await WriteErrorResponseAsync(context, statusCode, message);
+    }
+
+    private static async Task WriteErrorResponseAsync(
         HttpContext context,
         HttpStatusCode statusCode,
         string message)
@@ -44,12 +59,15 @@ public sealed class ExceptionHandlerMiddleware
         context.Response.StatusCode = (int)statusCode;
         context.Response.ContentType = "application/json";
 
-        var response = JsonSerializer.Serialize(new
-        {
-            error = message,
-            statusCode = (int)statusCode
-        });
+        var payload = JsonSerializer.Serialize(new ErrorResponse(
+            (int)statusCode,
+            message),
+            JsonOptions);
 
-        await context.Response.WriteAsync(response);
+        await context.Response.WriteAsync(payload);
     }
+
+    private sealed record ErrorResponse(
+        int StatusCode,
+        string Message);
 }
