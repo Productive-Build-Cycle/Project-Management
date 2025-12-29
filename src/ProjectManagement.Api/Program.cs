@@ -1,6 +1,9 @@
 using ProjectManagement.Api.Extentions;
 using ProjectManagement.Api.Middlewares;
+using ProjectManagement.Application.Interfaces.Persistence;
+using ProjectManagement.Domain.Repositories;
 using ProjectManagement.Infrastructure.Configurations;
+using ProjectManagement.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +11,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddSwaggerDocumentation();
 builder.Services.AddDependencyInjections(builder.Configuration);
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddOpenApi();
 
