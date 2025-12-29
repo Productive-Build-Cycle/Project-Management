@@ -6,34 +6,21 @@ using ProjectManagement.Infrastructure.DataAccess;
 namespace ProjectManagement.Infrastructure.Persistence;
 
 // Repository implementation for Project aggregate
-public class ProjectRepository : IProjectRepository
+public class ProjectRepository(ProjectManagementWriteDbContext context) : IProjectRepository
 {
-    private readonly ProjectManagementDbContext _context;
-
-    // Inject DbContext for data access
-    public ProjectRepository(ProjectManagementDbContext context)
-    {
-        _context = context;
-    }
+    private readonly ProjectManagementWriteDbContext _context = context;
 
     // Get a project by its id
-    public async Task<Project?> GetByIdAsync(Guid id)
+    public async Task<Project?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _context.Projects
-            .FirstOrDefaultAsync(p => p.Id == id);
-    }
-
-    // Get all projects
-    public async Task<List<Project>> GetAllAsync()
-    {
-        return await _context.Projects.ToListAsync();
+            .FirstOrDefaultAsync(p => p.Id == id,cancellationToken);
     }
 
     // Add a new project to the context
-    public async Task<Guid> AddAsync(Project project)
+    public async Task<Guid> AddAsync(Project project, CancellationToken cancellationToken = default)
     {
-        _context.Projects.Add(project);
-        await _context.SaveChangesAsync();
+        await _context.Projects.AddAsync(project, cancellationToken);
         return project.Id;
     }
 
@@ -41,5 +28,10 @@ public class ProjectRepository : IProjectRepository
     public void Update(Project project)
     {
         _context.Projects.Update(project);
+    }
+
+    public void Delete(Project project)
+    {
+        _context.Projects.Remove(project);
     }
 }
