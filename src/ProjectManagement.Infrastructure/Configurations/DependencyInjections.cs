@@ -1,10 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ProjectManagement.Application.Common.Behaviors;
+using ProjectManagement.Application.Features.Queries.GetProjectById;
+using ProjectManagement.Application.Interfaces;
 using ProjectManagement.Application.Interfaces.Persistence;
 using ProjectManagement.Domain.Repositories;
 using ProjectManagement.Infrastructure.DataAccess;
 using ProjectManagement.Infrastructure.Persistence;
+using ProjectManagement.Infrastructure.Persistence.Interceptors;
 
 namespace ProjectManagement.Infrastructure.Configurations;
 
@@ -12,9 +18,13 @@ public static class DependencyInjections
 {
     public static IServiceCollection AddDependencyInjections(this IServiceCollection services, IConfiguration configuration)
     {
-        #region Database
+        #region Interceptors
+        services.AddScoped<AuditInterceptor>();
+        services.AddScoped<SoftDeleteInterceptor>();
+        #endregion
 
-        services.AddDbContext<ProjectManagementDbContext>(options =>
+        #region Database
+        services.AddDbContext<ProjectManagementWriteDbContext>((serviceProvider, options) =>
         {
             options.UseSqlServer(
                 configuration.GetConnectionString("WriteAndReadConnection"),
@@ -27,23 +37,35 @@ public static class DependencyInjections
                 });
         });
 
+        services.AddDbContext<ProjectManagementReadDbContext>((serviceProvider, options) =>
+        {
+            options.UseSqlServer(
+                configuration.GetConnectionString("WriteAndReadConnection"),
+                sqlOptions =>
+                {
+                    sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(10),
+                        errorNumbersToAdd: null);
+                });
+
+            options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+        });
         #endregion
-        
+
         #region Repositories & UnitOfWork
+        services.AddScoped<IProjectQuery, ProjectQuery>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         #endregion
 
-        #region InternalServices
-
-        #endregion
-
         #region Behaviors
-
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         #endregion
 
         #region Packages
-
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetProjectByIdQuery).Assembly));
+        services.AddValidatorsFromAssembly(typeof(GetProjectByIdQuery).Assembly);
         #endregion
 
         return services;

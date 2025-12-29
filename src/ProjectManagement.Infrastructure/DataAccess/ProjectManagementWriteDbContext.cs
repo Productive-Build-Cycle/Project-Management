@@ -8,9 +8,9 @@ using System.Reflection;
 
 namespace ProjectManagement.Infrastructure.DataAccess;
 
-public class ProjectManagementDbContext : DbContext
+public class ProjectManagementWriteDbContext : DbContext
 {
-    public ProjectManagementDbContext(DbContextOptions<ProjectManagementDbContext> options)
+    public ProjectManagementWriteDbContext(DbContextOptions<ProjectManagementWriteDbContext> options)
         : base(options)
     {
     }
@@ -78,6 +78,5 @@ public class ProjectManagementDbContext : DbContext
             new SoftDeleteInterceptor()
         );
     }
-
     #endregion
 }
