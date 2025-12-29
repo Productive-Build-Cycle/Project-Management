@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProjectManagement.Domain.Aggregates.ProjectAggregate;
 using ProjectManagement.Domain.Repositories;
 using ProjectManagement.Infrastructure.DataAccess;
 
@@ -29,20 +30,16 @@ public class ProjectRepository : IProjectRepository
     }
 
     // Add a new project to the context
-    public async Task AddAsync(Project project)
+    public async Task<Guid> AddAsync(Project project)
     {
-        await _context.Projects.AddAsync(project);
+        _context.Projects.Add(project);
+        await _context.SaveChangesAsync();
+        return project.Id;
     }
 
     // Mark project as updated
     public void Update(Project project)
     {
         _context.Projects.Update(project);
-    }
-
-    // Remove project using domain logic (soft delete)
-    public void Remove(Project project)
-    {
-        project.Remove();
     }
 }

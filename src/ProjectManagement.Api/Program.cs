@@ -11,8 +11,6 @@ builder.Services.AddControllers();
 
 builder.Services.AddSwaggerDocumentation();
 builder.Services.AddDependencyInjections(builder.Configuration);
-builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddOpenApi();
 

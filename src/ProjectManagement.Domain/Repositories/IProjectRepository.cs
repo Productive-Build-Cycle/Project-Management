@@ -12,11 +12,8 @@ public interface IProjectRepository
     Task<List<Project>> GetAllAsync();
 
     // Add a new project
-    Task AddAsync(Project project);
+    Task<Guid> AddAsync(Project project);
 
     // Update an existing project
     void Update(Project project);
-
-    // Remove a project using domain logic (soft delete)
-    void Remove(Project project);
 }
