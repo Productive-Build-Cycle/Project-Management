@@ -1,5 +1,6 @@
 using ProjectManagement.Api.Extentions;
 using ProjectManagement.Api.Middlewares;
+using ProjectManagement.Application.Services;
 using ProjectManagement.Infrastructure.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddSwaggerDocumentation();
 builder.Services.AddDependencyInjections(builder.Configuration);
+builder.Services.AddScoped<ValidationService>();
 
 builder.Services.AddOpenApi();
 
