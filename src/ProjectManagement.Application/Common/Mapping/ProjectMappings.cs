@@ -1,6 +1,13 @@
-﻿namespace ProjectManagement.Application.Common.Mapping;
+﻿using Mapster;
+using ProjectManagement.Application.DTOs;
+using ProjectManagement.Application.Features.Commands;
 
-public class ProjectMappings
+namespace ProjectManagement.Application.Common.Mapping;
+
+public class ProjectMappings : IRegister
 {
-    
+    public void Register(TypeAdapterConfig config)
+    {
+        config.NewConfig<CreateProjectDto, CreateProjectCommand>();
+    }
 }

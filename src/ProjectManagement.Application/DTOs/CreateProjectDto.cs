@@ -8,7 +8,7 @@ public class CreateProjectDto
 
     [MaxLength(1000)] public string Description { get; set; }
 
-    [Required] public string TeamId { get; set; }
+    public string TeamId { get; set; }
 
     [Required] public DateTime DeadlineTime { get; set; }
 }
