@@ -1,15 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjectManagement.Domain.Aggregates.ProjectAggregate;
 using ProjectManagement.Domain.Common;
+using ProjectManagement.Domain.Common.Interfaces;
+using ProjectManagement.Infrastructure.Persistence.Interceptors;
 using System.Linq.Expressions;
 using System.Reflection;
-using ProjectManagement.Infrastructure.Persistence.Interceptors;
 
 namespace ProjectManagement.Infrastructure.DataAccess;
 
-public class ProjectManagementDbContext : DbContext
+public class ProjectManagementWriteDbContext : DbContext
 {
-    public ProjectManagementDbContext(DbContextOptions<ProjectManagementDbContext> options)
+    public ProjectManagementWriteDbContext(DbContextOptions<ProjectManagementWriteDbContext> options)
         : base(options)
     {
     }
@@ -30,9 +31,7 @@ public class ProjectManagementDbContext : DbContext
     #region Global Query Filter
     private static void ApplySoftDeleteQueryFilter(ModelBuilder modelBuilder)
     {
-        var entityTypes = modelBuilder.Model.GetEntityTypes();
-
-        foreach (var entityType in entityTypes)
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
             var clrType = entityType.ClrType;
 
@@ -40,14 +39,20 @@ public class ProjectManagementDbContext : DbContext
                 continue;
 
             var parameter = Expression.Parameter(clrType, "e");
-            var isRemovedProperty = Expression.Property(parameter, "IsDeleted");
 
-            var filterExpression = Expression.Lambda(
-                Expression.Equal(isRemovedProperty, Expression.Constant(false)),
-                parameter
+            var isDeletedProperty = Expression.Property(
+                parameter,
+                nameof(RemovableEntity<IBaseEntity>.IsDeleted)
             );
 
-            modelBuilder.Entity(clrType).HasQueryFilter(filterExpression);
+            var filterBody = Expression.Equal(
+                isDeletedProperty,
+                Expression.Constant(false)
+            );
+
+            var lambda = Expression.Lambda(filterBody, parameter);
+
+            modelBuilder.Entity(clrType).HasQueryFilter(lambda);
         }
     }
     private static bool IsRemovableEntity(Type type)
@@ -64,7 +69,7 @@ public class ProjectManagementDbContext : DbContext
         return false;
     }
     #endregion
-    
+
     #region Interceptor
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -73,6 +78,5 @@ public class ProjectManagementDbContext : DbContext
             new SoftDeleteInterceptor()
         );
     }
-
     #endregion
 }

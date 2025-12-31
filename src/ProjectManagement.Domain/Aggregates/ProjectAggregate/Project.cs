@@ -5,6 +5,7 @@ namespace ProjectManagement.Domain.Aggregates.ProjectAggregate;
 public class Project : RemovableEntity<Guid>
 {
     #region Props
+
     public string Title { get; private set; } = default!;
     public string? Description { get; private set; }
     public string? TeamId { get; private set; }
@@ -12,10 +13,14 @@ public class Project : RemovableEntity<Guid>
     public DateTime? StartTime { get; private set; }
     public DateTime? EndTime { get; private set; }
     public DateTime DeadlineTime { get; private set; }
+
     #endregion
 
     #region CTors
-    private Project() { }
+
+    private Project()
+    {
+    }
 
     public Project(
         string title,
@@ -32,6 +37,7 @@ public class Project : RemovableEntity<Guid>
 
         Status = ProjectStatus.Draft;
     }
+
     #endregion
 
     #region Setters

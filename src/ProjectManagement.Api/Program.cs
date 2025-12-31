@@ -1,7 +1,10 @@
 using ProjectManagement.Api.Extentions;
 using ProjectManagement.Api.Middlewares;
 using ProjectManagement.Application.Services;
+using ProjectManagement.Application.Interfaces.Persistence;
+using ProjectManagement.Domain.Repositories;
 using ProjectManagement.Infrastructure.Configurations;
+using ProjectManagement.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
