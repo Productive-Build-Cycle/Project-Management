@@ -1,4 +1,6 @@
 ﻿using FluentValidation;
+using Mapster;
+using MapsterMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -16,14 +18,18 @@ namespace ProjectManagement.Infrastructure.Configurations;
 
 public static class DependencyInjections
 {
-    public static IServiceCollection AddDependencyInjections(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddDependencyInjections(this IServiceCollection services,
+        IConfiguration configuration)
     {
         #region Interceptors
+
         services.AddScoped<AuditInterceptor>();
         services.AddScoped<SoftDeleteInterceptor>();
+
         #endregion
 
         #region Database
+
         services.AddDbContext<ProjectManagementWriteDbContext>((serviceProvider, options) =>
         {
             options.UseSqlServer(
@@ -51,21 +57,32 @@ public static class DependencyInjections
 
             options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         });
+
         #endregion
 
         #region Repositories & UnitOfWork
+
         services.AddScoped<IProjectQuery, ProjectQuery>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+
         #endregion
 
         #region Behaviors
+
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
         #endregion
 
         #region Packages
+
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetProjectByIdQuery).Assembly));
         services.AddValidatorsFromAssembly(typeof(GetProjectByIdQuery).Assembly);
+        
+        // Mapster
+        services.AddSingleton(TypeAdapterConfig.GlobalSettings);
+        services.AddScoped<IMapper, ServiceMapper>();
+
         #endregion
 
         return services;

@@ -2,6 +2,7 @@ using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManagement.Application.DTOs;
+using ProjectManagement.Application.Features.Commands;
 using ProjectManagement.Application.Features.Queries.Common.Pagination;
 using ProjectManagement.Application.Features.Queries.GetProjectById;
 
@@ -37,4 +38,23 @@ public class ProjectController(IMediator mediator) : ControllerBase
     [ProducesResponseType(typeof(PagedList<ProjectDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll([FromBody] FilterParameters filter, CancellationToken cancellationToken)
         => Ok(await _mediator.Send(filter.Adapt<GetAllProjectsQuery>(), cancellationToken));
+
+    /// <summary>
+    /// Creates a new project.
+    /// </summary>
+    /// <param name="command">Project creation data.</param>
+    /// <returns>
+    /// Returns the id of the newly created project.
+    /// </returns>
+    [HttpPost("create")]
+    public async Task<IActionResult> Create(
+        [FromBody] CreateProjectDto request,
+        CancellationToken cancellationToken)
+    {
+        var command = request.Adapt<CreateProjectCommand>();
+
+        var result = await _mediator.Send(command, cancellationToken);
+        return Ok(result);
+    }
+
 }
