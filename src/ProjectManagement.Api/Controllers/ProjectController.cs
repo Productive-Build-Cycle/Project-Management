@@ -51,12 +51,7 @@ public class ProjectController(IMediator mediator) : ControllerBase
         [FromBody] CreateProjectDto request,
         CancellationToken cancellationToken)
     {
-        var command = new CreateProjectCommand(
-            request.Title,
-            request.Description,
-            request.TeamId,
-            request.DeadlineTime
-        );
+        var command = request.Adapt<CreateProjectCommand>();
 
         var result = await _mediator.Send(command, cancellationToken);
         return Ok(result);
