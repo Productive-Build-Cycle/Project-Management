@@ -12,7 +12,6 @@ builder.Services.AddControllers();
 
 builder.Services.AddSwaggerDocumentation();
 builder.Services.AddDependencyInjections(builder.Configuration);
-builder.Services.AddScoped<ValidationService>();
 
 builder.Services.AddOpenApi();
 

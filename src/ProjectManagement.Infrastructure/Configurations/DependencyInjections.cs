@@ -7,6 +7,7 @@ using ProjectManagement.Application.Common.Behaviors;
 using ProjectManagement.Application.Features.Queries.GetProjectById;
 using ProjectManagement.Application.Interfaces;
 using ProjectManagement.Application.Interfaces.Persistence;
+using ProjectManagement.Application.Services;
 using ProjectManagement.Domain.Repositories;
 using ProjectManagement.Infrastructure.DataAccess;
 using ProjectManagement.Infrastructure.Persistence;
@@ -57,6 +58,8 @@ public static class DependencyInjections
         services.AddScoped<IProjectQuery, ProjectQuery>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<ValidationService>();
+
         #endregion
 
         #region Behaviors
