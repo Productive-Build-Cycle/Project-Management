@@ -78,12 +78,7 @@ public static class DependencyInjections
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetProjectByIdQuery).Assembly));
         services.AddValidatorsFromAssembly(typeof(GetProjectByIdQuery).Assembly);
-
-        services.AddMediatR(cfg =>
-            cfg.RegisterServicesFromAssembly(typeof(GetProjectByIdQuery).Assembly));
-
-        services.AddValidatorsFromAssembly(typeof(GetProjectByIdQuery).Assembly);
-
+        
         // Mapster
         services.AddSingleton(TypeAdapterConfig.GlobalSettings);
         services.AddScoped<IMapper, ServiceMapper>();
