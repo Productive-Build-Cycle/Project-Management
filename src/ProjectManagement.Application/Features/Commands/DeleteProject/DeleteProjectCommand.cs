@@ -1,6 +1,5 @@
-﻿namespace ProjectManagement.Application.Features.Commands.DeleteProject;
+﻿using MediatR;
 
-public class DeleteProjectCommand
-{
-    
-}
+namespace ProjectManagement.Application.Features.Commands.DeleteProject;
+
+public record DeleteProjectCommand(Guid Id) : IRequest;
