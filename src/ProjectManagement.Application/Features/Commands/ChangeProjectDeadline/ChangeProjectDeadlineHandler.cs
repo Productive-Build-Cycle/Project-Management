@@ -3,26 +3,26 @@ using ProjectManagement.Application.Interfaces.Persistence;
 using ProjectManagement.Domain.Exceptions;
 using ProjectManagement.Domain.Repositories;
 
-namespace ProjectManagement.Application.Features.Commands.UpdateProject;
+namespace ProjectManagement.Application.Features.Commands.ChangeProjectDeadline;
 
-public class UpdateProjectHandler(
+public class ChangeProjectDeadlineHandler(
     IProjectRepository projectRepository,
     IUnitOfWork unitOfWork)
-    : IRequestHandler<UpdateProjectCommand>
+    : IRequestHandler<ChangeProjectDeadlineCommand>
 {
     private readonly IProjectRepository _projectRepository = projectRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task Handle(
-        UpdateProjectCommand request,
+        ChangeProjectDeadlineCommand request,
         CancellationToken cancellationToken)
     {
         var project = await _projectRepository.GetByIdAsync(request.Id, cancellationToken) ?? throw new ProjectNotFoundException(request.Id);
 
-        project.SetTitle(request.Title);
-        project.SetDescription(request.Description);
+        project.ChangeDeadlineTime(request.DeadlineTime);
 
         await _unitOfWork.CommitAsync();
+
         return;
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace ProjectManagement.Application.DTOs;
+﻿namespace ProjectManagement.Api.Models.Requests;
 
 using System.ComponentModel.DataAnnotations;
 

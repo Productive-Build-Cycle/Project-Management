@@ -5,7 +5,7 @@ using ProjectManagement.Application.Features.Queries.Common.Pagination;
 using ProjectManagement.Application.Interfaces;
 using ProjectManagement.Domain.Exceptions;
 
-namespace ProjectManagement.Application.Features.Queries.GetProjectById;
+namespace ProjectManagement.Application.Features.Queries.GetAllProjects;
 
 public class GetAllProjectsHandler(IProjectQuery projectQuery) : IRequestHandler<GetAllProjectsQuery, PagedList<ProjectDto>>
 {
