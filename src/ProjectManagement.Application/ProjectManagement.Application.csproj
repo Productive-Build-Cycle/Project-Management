@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Commands\" />
 	<Folder Include="Features\Queries\" />
   </ItemGroup>
 
@@ -16,6 +15,17 @@
     <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="MediatR" Version="14.0.0" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.7.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ProjectManagement.Domain\ProjectManagement.Domain.csproj" />
+	<ProjectReference Include="..\ProjectManagement.Infrastructure\ProjectManagement.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="14.0.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.1" />
   </ItemGroup>
 
   <ItemGroup>
