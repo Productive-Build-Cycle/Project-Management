@@ -12,9 +12,5 @@ public class UpdateProjectValidator
         RuleFor(x => x.Title)
             .NotEmpty()
             .MaximumLength(200);
-
-        RuleFor(x => x.DeadlineTime)
-            .GreaterThan(DateTime.UtcNow)
-            .WithMessage("Deadline must be in the future.");
     }
 }

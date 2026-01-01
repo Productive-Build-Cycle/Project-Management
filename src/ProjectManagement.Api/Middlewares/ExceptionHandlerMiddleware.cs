@@ -37,6 +37,9 @@ public sealed class ExceptionHandlerMiddleware
             ProjectNotFoundException ex =>
                 (HttpStatusCode.NotFound, ex.Message),
 
+            DuplicateProjectTitleException ex =>
+                (HttpStatusCode.BadRequest, ex.Message),
+
             ArgumentException ex =>
                 (HttpStatusCode.BadRequest, ex.Message),
 

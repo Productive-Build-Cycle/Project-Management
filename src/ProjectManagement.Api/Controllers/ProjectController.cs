@@ -47,10 +47,8 @@ public class ProjectController(IMediator mediator) : ControllerBase
     /// <returns>
     /// Returns the id of the newly created project.
     /// </returns>
-    [HttpPost("create")]
-    public async Task<IActionResult> Create(
-        [FromBody] CreateProjectDto request,
-        CancellationToken cancellationToken)
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateProjectDto request, CancellationToken cancellationToken)
     {
         var command = request.Adapt<CreateProjectCommand>();
 
@@ -59,17 +57,21 @@ public class ProjectController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Updates an existing project.
+    /// Updates an existing project title and description.
     /// </summary>
     /// <param name="request">Project update data.</param>
-    [HttpPut("update")]
-    public async Task<IActionResult> Update(
-        [FromBody] UpdateProjectDto request,
-        CancellationToken cancellationToken)
+    [HttpPut("change-content")]
+    public async Task<IActionResult> Update([FromBody] UpdateProjectDto request, CancellationToken cancellationToken)
     {
         var command = request.Adapt<UpdateProjectCommand>();
-
         await _mediator.Send(command, cancellationToken);
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Deletes an existing project.
+    /// </summary>
+    /// <param name="id">Project Id.</param>
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {

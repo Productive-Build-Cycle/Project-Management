@@ -9,8 +9,4 @@ public class UpdateProjectDto
     [Required] [MaxLength(200)] public string Title { get; set; }
 
     [MaxLength(1000)] public string Description { get; set; }
-
-    public string TeamId { get; set; }
-
-    [Required] public DateTime DeadlineTime { get; set; }
 }
