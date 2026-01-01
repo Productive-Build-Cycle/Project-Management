@@ -74,18 +74,6 @@ public class ProjectController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Updates an existing project status.
-    /// </summary>
-    /// <param name="request">Project status.</param>
-    [HttpPut("change-status")]
-    public async Task<IActionResult> ChangeStatus([FromBody] ChangeProjectStatusDto request, CancellationToken cancellationToken)
-    {
-        var command = request.Adapt<ChangeProjectStatusCommand>();
-        await _mediator.Send(command, cancellationToken);
-        return NoContent();
-    }
-
-    /// <summary>
     /// Updates an existing project Deadline time.
     /// </summary>
     /// <param name="request">Project Deadline time.</param>
