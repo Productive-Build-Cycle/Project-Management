@@ -58,6 +58,18 @@ public class ProjectController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
 
+    /// <summary>
+    /// Updates an existing project.
+    /// </summary>
+    /// <param name="request">Project update data.</param>
+    [HttpPut("update")]
+    public async Task<IActionResult> Update(
+        [FromBody] UpdateProjectDto request,
+        CancellationToken cancellationToken)
+    {
+        var command = request.Adapt<UpdateProjectCommand>();
+
+        await _mediator.Send(command, cancellationToken);
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
