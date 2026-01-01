@@ -14,7 +14,14 @@ public class ProjectRepository(ProjectManagementWriteDbContext context) : IProje
     public async Task<Project?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _context.Projects
-            .FirstOrDefaultAsync(p => p.Id == id,cancellationToken);
+            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+    }
+
+    // Get a project by its name
+    public async Task<Project?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
+    {
+        return await _context.Projects
+            .FirstOrDefaultAsync(p => p.Title == name, cancellationToken);
     }
 
     // Add a new project to the context
