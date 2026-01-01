@@ -9,11 +9,11 @@ using ProjectManagement.Application.Common.Behaviors;
 using ProjectManagement.Application.Features.Queries.GetProjectById;
 using ProjectManagement.Application.Interfaces;
 using ProjectManagement.Application.Interfaces.Persistence;
-using ProjectManagement.Application.Services;
 using ProjectManagement.Domain.Repositories;
 using ProjectManagement.Infrastructure.DataAccess;
 using ProjectManagement.Infrastructure.Persistence;
 using ProjectManagement.Infrastructure.Persistence.Interceptors;
+using ProjectManagement.Infrastructure.Services;
 
 namespace ProjectManagement.Infrastructure.Configurations;
 
@@ -22,14 +22,9 @@ public static class DependencyInjections
     public static IServiceCollection AddDependencyInjections(this IServiceCollection services,
         IConfiguration configuration)
     {
-        #region Interceptors
-
+        #region Database
         services.AddScoped<AuditInterceptor>();
         services.AddScoped<SoftDeleteInterceptor>();
-
-        #endregion
-
-        #region Database
 
         services.AddDbContext<ProjectManagementWriteDbContext>((serviceProvider, options) =>
         {
@@ -61,13 +56,11 @@ public static class DependencyInjections
 
         #endregion
 
-        #region Repositories & UnitOfWork
-
+        #region Internal Services
         services.AddScoped<IProjectQuery, ProjectQuery>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<ValidationService>();
-
+        services.AddScoped<IValidationService, ValidationService>();
         #endregion
 
         #region Behaviors
@@ -80,8 +73,6 @@ public static class DependencyInjections
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetProjectByIdQuery).Assembly));
         services.AddValidatorsFromAssembly(typeof(GetProjectByIdQuery).Assembly);
-        
-        // Mapster
         services.AddSingleton(TypeAdapterConfig.GlobalSettings);
         services.AddScoped<IMapper, ServiceMapper>();
 
