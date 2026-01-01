@@ -64,14 +64,20 @@ public class ProjectController(IMediator mediator) : ControllerBase
     /// <param name="request">Project update data.</param>
     [HttpPut("update")]
     public async Task<IActionResult> Update(
-        [FromBody] UpdateProjectDto request,
-        CancellationToken cancellationToken)
+     [FromBody] UpdateProjectDto request,
+     CancellationToken cancellationToken)
     {
         var command = request.Adapt<UpdateProjectCommand>();
 
         await _mediator.Send(command, cancellationToken);
+
+        return NoContent(); 
+    }
+
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete(
+        Guid id,
+        CancellationToken cancellationToken)
     {
         await _mediator.Send(new DeleteProjectCommand(id), cancellationToken);
         return NoContent();
