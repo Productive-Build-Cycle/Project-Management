@@ -1,36 +1,26 @@
-﻿
-using Microsoft.Extensions.Configuration;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using ProjectManagement.Infrastructure.DataAccess;
 
-namespace ProjectManagement.Application.Services
+namespace ProjectManagement.Application.Services;
+
+public class ValidationService(ProjectManagementReadDbContext context)
 {
-    public class ValidationService
+    private readonly ProjectManagementReadDbContext _context = context;
+
+    public async Task<bool> ValidateTeamExistsAsync(string teamId)
     {
-        private readonly string _connectionString;
+        var sql = """
+              SELECT COUNT(1)
+              FROM Teams
+              WHERE Id = @TeamId
+              """;
 
-        public ValidationService(IConfiguration configuration)
-        {
-            _connectionString = configuration.GetConnectionString("Default");
-        }
+        var parameter = new SqlParameter("@TeamId", teamId);
 
-        public async Task ValidateTeamExistsAsync(string teamId)
-        {
-            const string query =
-                "SELECT COUNT(1) FROM Teams WHERE Id = @TeamId";
+        var count = await _context.Database
+            .ExecuteSqlRawAsync(sql, parameter);
 
-            using var connection = new SqlConnection(_connectionString);
-            using var command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@TeamId", teamId);
-
-            await connection.OpenAsync();
-
-            var exists = (int)await command.ExecuteScalarAsync() > 0;
-
-            if (!exists)
-                throw new Exception("Team does not exist.");
-        }
-
+        return count > 0;
     }
 }
-
