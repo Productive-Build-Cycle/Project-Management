@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using ProjectManagement.Application.Interfaces.Persistence;
 using ProjectManagement.Domain.Aggregates.ProjectAggregate;
+using ProjectManagement.Domain.Exceptions;
 using ProjectManagement.Domain.Repositories;
 
 namespace ProjectManagement.Application.Features.Commands.CreateProject;
@@ -17,7 +18,9 @@ public class CreateProjectHandler(
         CreateProjectCommand request,
         CancellationToken cancellationToken)
     {
-        Console.WriteLine("CreateProjectHandler called!"); 
+        if(await _projectRepository.TitleExistsAsync(request.Title, cancellationToken))        
+            throw new DuplicateProjectTitleException(request.Title);
+        
         var project = new Project(
             request.Title,
             request.DeadlineTime,

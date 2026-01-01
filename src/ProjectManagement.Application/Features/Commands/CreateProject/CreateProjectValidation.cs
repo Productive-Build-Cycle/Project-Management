@@ -11,9 +11,6 @@ public class CreateProjectValidator
             .NotEmpty()
             .MaximumLength(200);
 
-        RuleFor(x => x.TeamId)
-            .NotEmpty();
-
         RuleFor(x => x.DeadlineTime)
             .GreaterThan(DateTime.UtcNow)
             .WithMessage("Deadline must be in the future.");
