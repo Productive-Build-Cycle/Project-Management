@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManagement.Application.DTOs;
 using ProjectManagement.Application.Features.Commands;
+using ProjectManagement.Application.Features.Commands.DeleteProject;
 using ProjectManagement.Application.Features.Queries.Common.Pagination;
 using ProjectManagement.Application.Features.Queries.GetProjectById;
 
@@ -69,6 +70,10 @@ public class ProjectController(IMediator mediator) : ControllerBase
         var command = request.Adapt<UpdateProjectCommand>();
 
         await _mediator.Send(command, cancellationToken);
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new DeleteProjectCommand(id), cancellationToken);
         return NoContent();
     }
 }
