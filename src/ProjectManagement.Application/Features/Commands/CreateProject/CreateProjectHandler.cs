@@ -22,7 +22,7 @@ public class CreateProjectHandler(
         CancellationToken cancellationToken)
     {
         if (!string.IsNullOrWhiteSpace(request.TeamId) && !await _validationService.ValidateTeamExistsAsync(request.TeamId))
-            throw new Exception(request.TeamId);
+            throw new TeamNotFoundException(request.TeamId);
         else if (await _projectRepository.TitleExistsAsync(request.Title, cancellationToken))        
             throw new DuplicateProjectTitleException(request.Title);
         

@@ -23,7 +23,7 @@ namespace ProjectManagement.Application.Features.Commands.AssignTeamProject
             var project = await _projectRepository.GetByIdAsync(request.Id, cancellationToken) ?? throw new ProjectNotFoundException(request.Id);
 
             if (!await _validationService.ValidateTeamExistsAsync(request.TeamId))
-                throw new Exception(request.TeamId);
+                throw new TeamNotFoundException(request.TeamId);
 
             project.AssignToTeam(request.TeamId);
 

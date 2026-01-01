@@ -34,7 +34,7 @@ public sealed class ExceptionHandlerMiddleware
     {
         var (statusCode, message) = exception switch
         {
-            ProjectNotFoundException ex =>
+            NotFoundException ex =>
                 (HttpStatusCode.NotFound, ex.Message),
 
             DuplicateProjectTitleException ex =>
