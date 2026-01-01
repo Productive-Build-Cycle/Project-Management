@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using ProjectManagement.Application.Features.Commands;
+using ProjectManagement.Application.Features.Commands.UpdateProject;
 
 public class UpdateProjectValidator
     : AbstractValidator<UpdateProjectCommand>

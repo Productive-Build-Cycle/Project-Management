@@ -3,7 +3,7 @@ using ProjectManagement.Application.DTOs;
 using ProjectManagement.Application.Features.Queries.Common.Pagination;
 using System.ComponentModel.DataAnnotations;
 
-namespace ProjectManagement.Application.Features.Queries.GetProjectById;
+namespace ProjectManagement.Application.Features.Queries.GetAllProjects;
 
 public class GetAllProjectsQuery : IRequest<PagedList<ProjectDto>>
 {

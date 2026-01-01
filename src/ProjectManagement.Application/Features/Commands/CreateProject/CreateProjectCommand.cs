@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace ProjectManagement.Application.Features.Commands;
+namespace ProjectManagement.Application.Features.Commands.CreateProject;
 
 public record CreateProjectCommand(
     string Title,

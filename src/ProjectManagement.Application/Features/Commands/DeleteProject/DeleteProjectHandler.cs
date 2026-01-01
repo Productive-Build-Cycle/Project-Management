@@ -24,5 +24,6 @@ public class DeleteProjectHandler : IRequestHandler<DeleteProjectCommand>
 
         _projectRepository.Delete(project);
         await _unitOfWork.CommitAsync();
+        return;
     }
 }

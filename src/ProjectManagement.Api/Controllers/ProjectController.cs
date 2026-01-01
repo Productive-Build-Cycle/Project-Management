@@ -1,10 +1,14 @@
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using ProjectManagement.Api.Models.Requests;
 using ProjectManagement.Application.DTOs;
-using ProjectManagement.Application.Features.Commands;
+using ProjectManagement.Application.Features.Commands.ChangeProjectStatus;
+using ProjectManagement.Application.Features.Commands.CreateProject;
 using ProjectManagement.Application.Features.Commands.DeleteProject;
+using ProjectManagement.Application.Features.Commands.UpdateProject;
 using ProjectManagement.Application.Features.Queries.Common.Pagination;
+using ProjectManagement.Application.Features.Queries.GetAllProjects;
 using ProjectManagement.Application.Features.Queries.GetProjectById;
 
 namespace ProjectManagement.Api.Controllers;
@@ -64,6 +68,18 @@ public class ProjectController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> Update([FromBody] UpdateProjectDto request, CancellationToken cancellationToken)
     {
         var command = request.Adapt<UpdateProjectCommand>();
+        await _mediator.Send(command, cancellationToken);
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Updates an existing project status.
+    /// </summary>
+    /// <param name="request">Project update data.</param>
+    [HttpPut("change-status")]
+    public async Task<IActionResult> ChangeStatus([FromBody] ChangeProjectStatusDto request, CancellationToken cancellationToken)
+    {
+        var command = request.Adapt<ChangeProjectStatusCommand>();
         await _mediator.Send(command, cancellationToken);
         return NoContent();
     }
