@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using ProjectManagement.Application.Features.Commands;
+using ProjectManagement.Application.Features.Commands.CreateProject;
 
 
 public class CreateProjectValidator
@@ -10,9 +10,6 @@ public class CreateProjectValidator
         RuleFor(x => x.Title)
             .NotEmpty()
             .MaximumLength(200);
-
-        RuleFor(x => x.TeamId)
-            .NotEmpty();
 
         RuleFor(x => x.DeadlineTime)
             .GreaterThan(DateTime.UtcNow)

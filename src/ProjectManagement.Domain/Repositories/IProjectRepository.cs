@@ -9,7 +9,7 @@ public interface IProjectRepository
     Task<Project?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
     // Get a project by its name
-    Task<Project?> GetByNameAsync(string name, CancellationToken cancellationToken = default);
+    Task<bool> TitleExistsAsync(string name, CancellationToken cancellationToken = default);
 
     // Add a new project
     Task<Guid> AddAsync(Project project, CancellationToken cancellationToken = default);

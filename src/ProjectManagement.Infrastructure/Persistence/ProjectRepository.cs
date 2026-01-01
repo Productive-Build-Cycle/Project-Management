@@ -18,11 +18,9 @@ public class ProjectRepository(ProjectManagementWriteDbContext context) : IProje
     }
 
     // Get a project by its name
-    public async Task<Project?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
-    {
-        return await _context.Projects
-            .FirstOrDefaultAsync(p => p.Title == name, cancellationToken);
-    }
+    public async Task<bool> TitleExistsAsync(string name, CancellationToken cancellationToken = default)
+        => await _context.Projects.AnyAsync(p => p.Title == name, cancellationToken);
+    
 
     // Add a new project to the context
     public async Task<Guid> AddAsync(Project project, CancellationToken cancellationToken = default)

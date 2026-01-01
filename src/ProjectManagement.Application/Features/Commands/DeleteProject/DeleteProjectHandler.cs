@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using ProjectManagement.Application.Interfaces.Persistence;
+using ProjectManagement.Domain.Exceptions;
 using ProjectManagement.Domain.Repositories;
 
 namespace ProjectManagement.Application.Features.Commands.DeleteProject;
@@ -19,12 +20,10 @@ public class DeleteProjectHandler : IRequestHandler<DeleteProjectCommand>
 
     public async Task Handle(DeleteProjectCommand request, CancellationToken cancellationToken)
     {
-        var project = await _projectRepository.GetByIdAsync(request.Id, cancellationToken);
-
-        if (project is null)
-            throw new Exception("Project not found");
+        var project = await _projectRepository.GetByIdAsync(request.Id, cancellationToken) ?? throw new ProjectNotFoundException(request.Id);
 
         _projectRepository.Delete(project);
         await _unitOfWork.CommitAsync();
+        return;
     }
 }

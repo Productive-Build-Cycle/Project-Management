@@ -1,16 +1,14 @@
-﻿namespace ProjectManagement.Application.DTOs;
+﻿namespace ProjectManagement.Api.Models.Requests;
 
 using System.ComponentModel.DataAnnotations;
 
-public class UpdateProjectDto
+public class CreateProjectDto
 {
-    [Required] public Guid Id { get; set; }
-
     [Required] [MaxLength(200)] public string Title { get; set; }
 
     [MaxLength(1000)] public string Description { get; set; }
 
-    public string TeamId { get; set; }
+    public string? TeamId { get; set; }
 
     [Required] public DateTime DeadlineTime { get; set; }
 }

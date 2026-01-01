@@ -1,10 +1,15 @@
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using ProjectManagement.Api.Models.Requests;
 using ProjectManagement.Application.DTOs;
-using ProjectManagement.Application.Features.Commands;
+using ProjectManagement.Application.Features.Commands.ChangeProjectDeadline;
+using ProjectManagement.Application.Features.Commands.ChangeProjectStatus;
+using ProjectManagement.Application.Features.Commands.CreateProject;
 using ProjectManagement.Application.Features.Commands.DeleteProject;
+using ProjectManagement.Application.Features.Commands.UpdateProject;
 using ProjectManagement.Application.Features.Queries.Common.Pagination;
+using ProjectManagement.Application.Features.Queries.GetAllProjects;
 using ProjectManagement.Application.Features.Queries.GetProjectById;
 
 namespace ProjectManagement.Api.Controllers;
@@ -47,10 +52,8 @@ public class ProjectController(IMediator mediator) : ControllerBase
     /// <returns>
     /// Returns the id of the newly created project.
     /// </returns>
-    [HttpPost("create")]
-    public async Task<IActionResult> Create(
-        [FromBody] CreateProjectDto request,
-        CancellationToken cancellationToken)
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateProjectDto request, CancellationToken cancellationToken)
     {
         var command = request.Adapt<CreateProjectCommand>();
 
@@ -59,21 +62,33 @@ public class ProjectController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Updates an existing project.
+    /// Updates an existing project title and description.
     /// </summary>
     /// <param name="request">Project update data.</param>
-    [HttpPut("update")]
-    public async Task<IActionResult> Update(
-     [FromBody] UpdateProjectDto request,
-     CancellationToken cancellationToken)
+    [HttpPut("change-content")]
+    public async Task<IActionResult> Update([FromBody] UpdateProjectDto request, CancellationToken cancellationToken)
     {
         var command = request.Adapt<UpdateProjectCommand>();
-
         await _mediator.Send(command, cancellationToken);
-
-        return NoContent(); 
+        return NoContent();
     }
 
+    /// <summary>
+    /// Updates an existing project Deadline time.
+    /// </summary>
+    /// <param name="request">Project Deadline time.</param>
+    [HttpPut("change-deadline")]
+    public async Task<IActionResult> ChangeDeadlineTime([FromBody] ChangeProjectDeadlineTimeDto request, CancellationToken cancellationToken)
+    {
+        var command = request.Adapt<ChangeProjectDeadlineCommand>();
+        await _mediator.Send(command, cancellationToken);
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Deletes an existing project.
+    /// </summary>
+    /// <param name="id">Project Id.</param>
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(
         Guid id,

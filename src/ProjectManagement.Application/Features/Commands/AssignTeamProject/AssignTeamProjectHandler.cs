@@ -1,19 +1,19 @@
 ﻿using MediatR;
 using ProjectManagement.Application.Interfaces.Persistence;
-using ProjectManagement.Application.Services;
 using ProjectManagement.Domain.Exceptions;
 using ProjectManagement.Domain.Repositories;
+using ProjectManagement.Application.Interfaces;
 
 namespace ProjectManagement.Application.Features.Commands.AssignTeamProject
 {
 
     public sealed class AssignTeamToProjectHandler(
             IProjectRepository projectRepository,
-            ValidationService validationService,
+            IValidationService validationService,
             IUnitOfWork unitOfWork) : IRequestHandler<AssignTeamToProjectCommand>
     {
         private readonly IProjectRepository _projectRepository = projectRepository;
-        private readonly ValidationService _validationService = validationService;
+        private readonly IValidationService _validationService = validationService;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public async Task Handle(

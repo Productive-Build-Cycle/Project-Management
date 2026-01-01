@@ -1,10 +1,11 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using ProjectManagement.Application.Interfaces;
 using ProjectManagement.Infrastructure.DataAccess;
 
-namespace ProjectManagement.Application.Services;
+namespace ProjectManagement.Infrastructure.Services;
 
-public class ValidationService(ProjectManagementReadDbContext context)
+public class ValidationService(ProjectManagementReadDbContext context) : IValidationService
 {
     private readonly ProjectManagementReadDbContext _context = context;
 
