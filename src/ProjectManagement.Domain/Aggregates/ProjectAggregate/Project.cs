@@ -42,20 +42,22 @@ public class Project : RemovableEntity<Guid>
 
     #region Setters
 
-    public void SetTitle(string title)
+    public Project SetTitle(string title)
     {
         if (string.IsNullOrWhiteSpace(title))
             throw new ArgumentException("Project title cannot be empty.", nameof(title));
 
         Title = title.Trim();
+        return this;
     }
 
-    public void SetDescription(string? description)
+    public Project SetDescription(string? description)
     {
         Description = description?.Trim();
+        return this;
     }
 
-    public void ChangeStatus(ProjectStatus newStatus)
+    public Project ChangeStatus(ProjectStatus newStatus)
     {
         if (Status == ProjectStatus.Completed)
             throw new InvalidOperationException("Completed project status cannot be changed.");
@@ -64,9 +66,10 @@ public class Project : RemovableEntity<Guid>
             throw new InvalidOperationException($"Invalid status transition from {Status} to {newStatus}.");
 
         Status = newStatus;
+        return this;
     }
 
-    public void Start(DateTime startTime)
+    public Project Start(DateTime startTime)
     {
         if (Status != ProjectStatus.Draft)
             throw new InvalidOperationException("Only draft projects can be started.");
@@ -76,9 +79,10 @@ public class Project : RemovableEntity<Guid>
 
         StartTime = startTime;
         Status = ProjectStatus.InProgress;
+        return this;
     }
 
-    public void Finish(DateTime endTime)
+    public Project Finish(DateTime endTime)
     {
         if (Status != ProjectStatus.InProgress)
             throw new InvalidOperationException("Only in-progress projects can be completed.");
@@ -88,19 +92,22 @@ public class Project : RemovableEntity<Guid>
 
         EndTime = endTime;
         Status = ProjectStatus.Completed;
+        return this;
     }
 
-    public void ChangeDeadlineTime(DateTime deadlineTime)
+    public Project ChangeDeadlineTime(DateTime deadlineTime)
     {
         if (Status == ProjectStatus.Completed)
             throw new InvalidOperationException("Deadline cannot be changed after completion.");
 
         DeadlineTime = deadlineTime;
+        return this;
     }
 
-    public void AssignToTeam(string? teamId)
+    public Project AssignToTeam(string? teamId)
     {
         TeamId = teamId;
+        return this;
     }
 
     #endregion
