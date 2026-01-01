@@ -6,7 +6,7 @@ using System.Text;
 namespace ProjectManagement.Application.Features.Commands.AssignTeamProject
 {
     public sealed record AssignTeamToProjectCommand(
-     Guid ProjectId,
+     Guid Id,
      string TeamId
  ) : IRequest;
 }

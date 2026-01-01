@@ -3,5 +3,5 @@
 public class DuplicateProjectTitleException : ProjectException
 {
     public DuplicateProjectTitleException(string projectTitle)
-        : base($"Project with ID '{projectTitle}' was not found.") { }
+        : base($"Project with Title: '{projectTitle}' already exists.") { }
 }

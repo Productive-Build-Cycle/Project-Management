@@ -20,7 +20,7 @@ namespace ProjectManagement.Application.Features.Commands.AssignTeamProject
             AssignTeamToProjectCommand request,
             CancellationToken cancellationToken)
         {
-            var project = await _projectRepository.GetByIdAsync(request.ProjectId, cancellationToken) ?? throw new ProjectNotFoundException(request.ProjectId);
+            var project = await _projectRepository.GetByIdAsync(request.Id, cancellationToken) ?? throw new ProjectNotFoundException(request.Id);
 
             if (!await _validationService.ValidateTeamExistsAsync(request.TeamId))
                 throw new Exception(request.TeamId);

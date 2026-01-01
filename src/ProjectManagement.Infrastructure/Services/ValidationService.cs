@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProjectManagement.Application.Interfaces;
 using ProjectManagement.Infrastructure.DataAccess;
+using System.Data;
 
 namespace ProjectManagement.Infrastructure.Services;
 
@@ -11,17 +12,29 @@ public class ValidationService(ProjectManagementReadDbContext context) : IValida
 
     public async Task<bool> ValidateTeamExistsAsync(string teamId)
     {
-        var sql = """
-              SELECT COUNT(1)
-              FROM Teams
-              WHERE Id = @TeamId
-              """;
+        if (!Guid.TryParse(teamId, out var teamGuid))
+            return false;
 
-        var parameter = new SqlParameter("@TeamId", teamId);
+        await using var connection = _context.Database.GetDbConnection();
+        await using var command = connection.CreateCommand();
 
-        var count = await _context.Database
-            .ExecuteSqlRawAsync(sql, parameter);
+        command.CommandText = """
+        SELECT 1
+        FROM Teams
+        WHERE Id = @TeamId
+        """;
 
-        return count > 0;
+        var parameter = command.CreateParameter();
+        parameter.ParameterName = "@TeamId";
+        parameter.DbType = DbType.Guid;
+        parameter.Value = teamGuid;
+        command.Parameters.Add(parameter);
+
+        if (connection.State != ConnectionState.Open)
+            await connection.OpenAsync();
+
+        var result = await command.ExecuteScalarAsync();
+
+        return result != null;
     }
 }

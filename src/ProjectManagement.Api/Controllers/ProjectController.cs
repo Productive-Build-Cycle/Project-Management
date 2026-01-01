@@ -3,8 +3,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManagement.Api.Models.Requests;
 using ProjectManagement.Application.DTOs;
+using ProjectManagement.Application.Features.Commands.AssignTeamProject;
 using ProjectManagement.Application.Features.Commands.ChangeProjectDeadline;
-using ProjectManagement.Application.Features.Commands.ChangeProjectStatus;
 using ProjectManagement.Application.Features.Commands.CreateProject;
 using ProjectManagement.Application.Features.Commands.DeleteProject;
 using ProjectManagement.Application.Features.Commands.UpdateProject;
@@ -81,6 +81,18 @@ public class ProjectController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> ChangeDeadlineTime([FromBody] ChangeProjectDeadlineTimeDto request, CancellationToken cancellationToken)
     {
         var command = request.Adapt<ChangeProjectDeadlineCommand>();
+        await _mediator.Send(command, cancellationToken);
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Assigns team to  project.
+    /// </summary>
+    /// <param name="request">Project Deadline time.</param>
+    [HttpPut("assign-team")]
+    public async Task<IActionResult> AssignTeam([FromBody] AssignTeamToProjectDto request, CancellationToken cancellationToken)
+    {
+        var command = request.Adapt<AssignTeamToProjectCommand>();
         await _mediator.Send(command, cancellationToken);
         return NoContent();
     }

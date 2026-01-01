@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjectManagement.Domain.Aggregates.ProjectAggregate;
 using ProjectManagement.Domain.Common;
-using ProjectManagement.Domain.Common.Interfaces;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -39,15 +38,15 @@ public class ProjectManagementReadDbContext : DbContext
 
             var parameter = Expression.Parameter(clrType, "e");
 
-            var isDeletedProperty = Expression.Property(
-                parameter,
-                nameof(RemovableEntity<IBaseEntity>.IsDeleted)
-            );
+            var isDeletedPropertyInfo = clrType.GetProperty("IsDeleted",
+                BindingFlags.Public | BindingFlags.Instance);
 
-            var filterBody = Expression.Equal(
-                isDeletedProperty,
-                Expression.Constant(false)
-            );
+            if (isDeletedPropertyInfo == null)
+                continue;
+
+            var isDeletedProperty = Expression.Property(parameter, isDeletedPropertyInfo);
+
+            var filterBody = Expression.Equal(isDeletedProperty, Expression.Constant(false));
 
             var lambda = Expression.Lambda(filterBody, parameter);
 

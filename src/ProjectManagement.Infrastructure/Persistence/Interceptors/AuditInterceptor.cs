@@ -1,40 +1,64 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using ProjectManagement.Domain.Common;
-using ProjectManagement.Domain.Common.Interfaces;
 
 namespace ProjectManagement.Infrastructure.Persistence.Interceptors;
 
 // Interceptor to automatically set audit fields (CreatedAt, ModifiedAt) before saving changes
 public class AuditInterceptor : SaveChangesInterceptor
 {
+    public override InterceptionResult<int> SavingChanges(
+            DbContextEventData eventData,
+            InterceptionResult<int> result)
+    {
+        UpdateEntries(eventData.Context);
+        return base.SavingChanges(eventData, result);
+    }
+
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData,
         InterceptionResult<int> result,
         CancellationToken cancellationToken = default)
     {
-        var context = eventData.Context;
-        if (context == null)
-            return base.SavingChangesAsync(eventData, result, cancellationToken);
+        UpdateEntries(eventData.Context);
+        return base.SavingChangesAsync(eventData, result, cancellationToken);
+    }
 
-        var now = DateTime.UtcNow;
+    private void UpdateEntries(DbContext context)
+    {
+        if (context == null) return;
 
-        // Iterate through tracked entities of type BaseEntity<IBaseEntity>
-        foreach (var entry in context.ChangeTracker.Entries<BaseEntity<IBaseEntity>>())
+        var entries = context.ChangeTracker
+            .Entries()
+            .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified)
+            .Where(e => ImplementsBaseEntity(e.Entity.GetType()));
+
+        var now = DateTime.Now;
+
+        foreach (var entry in entries)
         {
-            if (entry.State == EntityState.Added)
+            switch (entry.State)
             {
-                // Set CreatedAt timestamp when a new entity is added
-                entry.Entity.SetCreatedAt(now);
-            }
+                case EntityState.Added:
+                    entry.Property("CreatedAt").CurrentValue = now;
+                    break;
 
-            else if (entry.State == EntityState.Modified)
-            {
-                // Update ModifiedAt timestamp when an existing entity is modified
-                entry.Entity.SetModifiedAt(now);
+                case EntityState.Modified:
+                    entry.Property("ModifiedAt").CurrentValue = now;
+                    break;
             }
         }
+    }
 
-        return base.SavingChangesAsync(eventData, result, cancellationToken);
+    private static bool ImplementsBaseEntity(Type entityType)
+    {
+        while (entityType != null && entityType != typeof(object))
+        {
+            if (entityType.IsGenericType && entityType.GetGenericTypeDefinition() == typeof(BaseEntity<>))
+                return true;
+
+            entityType = entityType.BaseType;
+        }
+        return false;
     }
 }
