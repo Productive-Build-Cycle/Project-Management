@@ -15,9 +15,7 @@ namespace ProjectManagement.Application.Features.Commands.EndProject
 
             RuleFor(x => x.EndTime)
                 .NotEmpty()
-                .WithMessage("End time is required.")
-                .LessThanOrEqualTo(DateTime.UtcNow)
-                .WithMessage("End time cannot be in the future.");
+                .WithMessage("End time is required.");
         }
     }
 }

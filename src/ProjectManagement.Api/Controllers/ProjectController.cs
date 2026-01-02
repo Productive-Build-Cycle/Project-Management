@@ -91,9 +91,7 @@ public class ProjectController(IMediator mediator) : ControllerBase
     /// </summary>
     /// <param name="id">Project Id.</param>
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(
-        Guid id,
-        CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         await _mediator.Send(new DeleteProjectCommand(id), cancellationToken);
         return NoContent();
@@ -104,12 +102,7 @@ public class ProjectController(IMediator mediator) : ControllerBase
      [FromBody] StartProjectDto request,
      CancellationToken cancellationToken)
     {
-        var command = new StartProjectCommand
-        {
-            ProjectId = request.ProjectId,
-            StartTime = request.StartTime
-        };
-
+        var command = request.Adapt<StartProjectCommand>();
         await _mediator.Send(command, cancellationToken);
         return NoContent();
     }
@@ -119,11 +112,7 @@ public class ProjectController(IMediator mediator) : ControllerBase
     [FromBody] EndProjectDto request,
     CancellationToken cancellationToken)
     {
-        var command = new EndProjectCommand(
-            request.ProjectId,
-            request.EndTime
-        );
-
+        var command = request.Adapt<EndProjectCommand>();
         await _mediator.Send(command, cancellationToken);
         return NoContent();
     }

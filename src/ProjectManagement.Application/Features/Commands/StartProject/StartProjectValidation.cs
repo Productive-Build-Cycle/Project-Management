@@ -15,9 +15,7 @@ namespace ProjectManagement.Application.Features.Commands.StartProject
 
             RuleFor(x => x.StartTime)
                 .NotEmpty()
-                .WithMessage("Start time is required.")
-                .LessThanOrEqualTo(DateTime.UtcNow)
-                .WithMessage("Start time cannot be in the future.");
+                .WithMessage("Start time is required.");
         }
     }
 }
