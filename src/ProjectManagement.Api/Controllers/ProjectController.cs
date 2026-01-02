@@ -1,3 +1,4 @@
+#region Usings
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,7 @@ using ProjectManagement.Application.Features.Commands.UpdateProject;
 using ProjectManagement.Application.Features.Queries.Common.Pagination;
 using ProjectManagement.Application.Features.Queries.GetAllProjects;
 using ProjectManagement.Application.Features.Queries.GetProjectById;
-
+#endregion
 namespace ProjectManagement.Api.Controllers;
 
 [ApiController]
@@ -50,23 +51,23 @@ public class ProjectController(IMediator mediator) : ControllerBase
     /// <summary>
     /// Creates a new project.
     /// </summary>
-    /// <param name="command">Project creation data.</param>
+    /// <param name="request">The data required to create a project.</param>
     /// <returns>
-    /// Returns the id of the newly created project.
+    /// The unique identifier (GUID) of the newly created project.
     /// </returns>
     [HttpPost]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     public async Task<IActionResult> Create([FromBody] CreateProjectDto request, CancellationToken cancellationToken)
     {
         var command = request.Adapt<CreateProjectCommand>();
-
         var result = await _mediator.Send(command, cancellationToken);
         return Ok(result);
     }
 
     /// <summary>
-    /// Updates an existing project title and description.
+    /// Updates the title and description of an existing project.
     /// </summary>
-    /// <param name="request">Project update data.</param>
+    /// <param name="request">The project content update data.</param>
     [HttpPut("change-content")]
     public async Task<IActionResult> Update([FromBody] UpdateProjectDto request, CancellationToken cancellationToken)
     {
@@ -76,9 +77,9 @@ public class ProjectController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Updates an existing project Deadline time.
+    /// Updates the deadline of an existing project.
     /// </summary>
-    /// <param name="request">Project Deadline time.</param>
+    /// <param name="request">Project identifier and new deadline date.</param>
     [HttpPut("change-deadline")]
     public async Task<IActionResult> ChangeDeadlineTime([FromBody] ChangeProjectDeadlineTimeDto request, CancellationToken cancellationToken)
     {
@@ -88,9 +89,9 @@ public class ProjectController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Assigns team to  project.
+    /// Assigns a team to a project.
     /// </summary>
-    /// <param name="request">Project Deadline time.</param>
+    /// <param name="request">Project identifier and team ID.</param>
     [HttpPut("assign-team")]
     public async Task<IActionResult> AssignTeam([FromBody] AssignTeamToProjectDto request, CancellationToken cancellationToken)
     {
@@ -100,9 +101,9 @@ public class ProjectController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Deletes an existing project.
+    /// Deletes a project by its unique identifier.
     /// </summary>
-    /// <param name="id">Project Id.</param>
+    /// <param name="id">The unique identifier (GUID) of the project.</param>
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
     {
@@ -110,20 +111,24 @@ public class ProjectController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Starts a project.
+    /// </summary>
+    /// <param name="request">Project identifier and start date.</param>
     [HttpPut("start")]
-    public async Task<IActionResult> StartProject(
-     [FromBody] StartProjectDto request,
-     CancellationToken cancellationToken)
+    public async Task<IActionResult> StartProject([FromBody] StartProjectDto request, CancellationToken cancellationToken)
     {
         var command = request.Adapt<StartProjectCommand>();
         await _mediator.Send(command, cancellationToken);
         return NoContent();
     }
 
+    /// <summary>
+    /// Ends a project.
+    /// </summary>
+    /// <param name="request">Project identifier and end date.</param>
     [HttpPut("end")]
-    public async Task<IActionResult> EndProject(
-    [FromBody] EndProjectDto request,
-    CancellationToken cancellationToken)
+    public async Task<IActionResult> EndProject([FromBody] EndProjectDto request, CancellationToken cancellationToken)
     {
         var command = request.Adapt<EndProjectCommand>();
         await _mediator.Send(command, cancellationToken);
