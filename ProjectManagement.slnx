@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/docs/">
+    <File Path="docs/CoverLetter.md" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/ProjectManagement.Api/ProjectManagement.Api.csproj" />
     <Project Path="src/ProjectManagement.Application/ProjectManagement.Application.csproj" />
