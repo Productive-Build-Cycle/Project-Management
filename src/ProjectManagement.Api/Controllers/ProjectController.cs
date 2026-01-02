@@ -4,9 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using ProjectManagement.Api.Models.Requests;
 using ProjectManagement.Application.DTOs;
 using ProjectManagement.Application.Features.Commands.ChangeProjectDeadline;
-using ProjectManagement.Application.Features.Commands.ChangeProjectStatus;
 using ProjectManagement.Application.Features.Commands.CreateProject;
 using ProjectManagement.Application.Features.Commands.DeleteProject;
+using ProjectManagement.Application.Features.Commands.EndProject;
+using ProjectManagement.Application.Features.Commands.StartProject;
 using ProjectManagement.Application.Features.Commands.UpdateProject;
 using ProjectManagement.Application.Features.Queries.Common.Pagination;
 using ProjectManagement.Application.Features.Queries.GetAllProjects;
@@ -95,6 +96,35 @@ public class ProjectController(IMediator mediator) : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(new DeleteProjectCommand(id), cancellationToken);
+        return NoContent();
+    }
+
+    [HttpPut("start")]
+    public async Task<IActionResult> StartProject(
+     [FromBody] StartProjectDto request,
+     CancellationToken cancellationToken)
+    {
+        var command = new StartProjectCommand
+        {
+            ProjectId = request.ProjectId,
+            StartTime = request.StartTime
+        };
+
+        await _mediator.Send(command, cancellationToken);
+        return NoContent();
+    }
+
+    [HttpPut("end")]
+    public async Task<IActionResult> EndProject(
+    [FromBody] EndProjectDto request,
+    CancellationToken cancellationToken)
+    {
+        var command = new EndProjectCommand(
+            request.ProjectId,
+            request.EndTime
+        );
+
+        await _mediator.Send(command, cancellationToken);
         return NoContent();
     }
 }
