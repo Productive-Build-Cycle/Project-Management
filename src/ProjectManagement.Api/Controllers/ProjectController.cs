@@ -7,6 +7,8 @@ using ProjectManagement.Application.Features.Commands.AssignTeamProject;
 using ProjectManagement.Application.Features.Commands.ChangeProjectDeadline;
 using ProjectManagement.Application.Features.Commands.CreateProject;
 using ProjectManagement.Application.Features.Commands.DeleteProject;
+using ProjectManagement.Application.Features.Commands.EndProject;
+using ProjectManagement.Application.Features.Commands.StartProject;
 using ProjectManagement.Application.Features.Commands.UpdateProject;
 using ProjectManagement.Application.Features.Queries.Common.Pagination;
 using ProjectManagement.Application.Features.Queries.GetAllProjects;
@@ -102,9 +104,29 @@ public class ProjectController(IMediator mediator) : ControllerBase
     /// </summary>
     /// <param name="id">Project Id.</param>
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         await _mediator.Send(new DeleteProjectCommand(id), cancellationToken);
+        return NoContent();
+    }
+
+    [HttpPut("start")]
+    public async Task<IActionResult> StartProject(
+     [FromBody] StartProjectDto request,
+     CancellationToken cancellationToken)
+    {
+        var command = request.Adapt<StartProjectCommand>();
+        await _mediator.Send(command, cancellationToken);
+        return NoContent();
+    }
+
+    [HttpPut("end")]
+    public async Task<IActionResult> EndProject(
+    [FromBody] EndProjectDto request,
+    CancellationToken cancellationToken)
+    {
+        var command = request.Adapt<EndProjectCommand>();
+        await _mediator.Send(command, cancellationToken);
         return NoContent();
     }
 }
